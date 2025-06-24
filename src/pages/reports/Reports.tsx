@@ -1000,7 +1000,7 @@ const Reports: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

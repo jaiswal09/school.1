@@ -23,7 +23,7 @@ import { format } from 'date-fns';
 import { useTransactions } from '../../hooks/useTransactions';
 import { useCheckout } from '../../hooks/useCheckout';
 import { Transaction } from '../../lib/supabase';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
 
 const Transactions: React.FC = () => {
