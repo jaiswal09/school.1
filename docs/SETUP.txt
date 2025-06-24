@@ -1,0 +1,229 @@
+# SchoolSync - School Inventory Management System
+## Setup Guide
+
+### Prerequisites
+- Node.js 18+ installed
+- Git installed
+- A Supabase account
+
+### Initial Setup
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd school-inventory-management
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up Supabase:
+   - Create a new project at https://supabase.com
+   - Get your project URL and anon key
+   - Create a `.env` file in the project root:
+   ```
+   VITE_SUPABASE_URL=your_project_url
+   VITE_SUPABASE_ANON_KEY=your_anon_key
+   ```
+
+4. Run database migrations:
+   - Copy all files from `supabase/migrations` to your Supabase project's SQL editor
+   - Run each migration in order (they are numbered for proper sequence)
+
+5. Start the development server:
+```bash
+npm run dev
+```
+
+### User Roles and Registration
+
+The system supports four user roles:
+1. Admin - Full system access
+2. Staff - Can manage inventory and resources
+3. Teacher - Can make reservations and check out items
+4. Student - Basic access to view and reserve items
+
+#### Creating an Admin Account
+
+1. First register as a normal user at `/register`
+2. Connect to your Supabase database and run:
+```sql
+UPDATE users 
+SET role = 'admin' 
+WHERE email = 'your_email@example.com';
+```
+
+#### Default User Registration
+- Users register at `/register`
+- Default role is 'student'
+- Admins can change user roles in the Users section
+
+### Features
+
+1. Inventory Management
+   - Add/edit/delete items (Admin/Staff only)
+   - Track quantities
+   - Set minimum stock levels
+   - Generate QR codes
+   - Upload item images (optional)
+
+2. Resource Management
+   - Manage rooms, labs, equipment (Admin/Staff only)
+   - Handle reservations
+   - Track maintenance
+
+3. Transaction System
+   - Check out/in items
+   - Track due dates
+   - Handle overdue items
+   - Export transaction reports
+   - Role-based transaction visibility:
+     - Admin/Staff: See all transactions
+     - Teacher/Student: See only their own transactions
+
+4. User Management
+   - Role-based access control
+   - Department assignment
+   - Activity tracking
+   - Contact information (phone numbers)
+   - Profile editing (Admin can edit any profile, users can edit their own)
+
+5. Reports & Analytics
+   - Real-time inventory status
+   - Usage analytics based on actual data
+   - Low stock alerts
+   - Weekly activity patterns
+   - Predictive analytics (Admin/Staff only)
+   - Role-based report visibility:
+     - Admin/Staff: Full system analytics and procurement recommendations
+     - Teacher/Student: Personal activity insights only
+
+6. Categories Management
+   - Create/edit/delete categories (Admin/Staff only)
+   - Organize inventory items
+
+### Performance Optimizations
+
+The system includes several performance optimizations to prevent resource exhaustion:
+
+1. **Memoized Hook Functions**: All data fetching functions in custom hooks are wrapped with `useCallback` to prevent unnecessary re-renders
+2. **Optimized Data Processing**: Chart data and analytics are computed using `useMemo` to avoid redundant calculations
+3. **Efficient Database Queries**: Reduced redundant Supabase calls and optimized query patterns
+4. **Role-based Data Filtering**: Data is filtered at the component level to show only relevant information
+
+### New Features Added
+
+1. **Image Upload for Items**
+   - Optional image upload when adding/editing items
+   - 5MB file size limit
+   - Supports JPG, PNG, GIF formats
+   - Image preview functionality
+
+2. **Enhanced User Profiles**
+   - Phone number field added
+   - Admin can edit any user profile
+   - Users can edit their own profiles
+
+3. **Real-time Analytics**
+   - Weekly activity based on actual transaction data
+   - Transaction activity charts with real data
+   - Export functionality for reports
+   - Predictive analytics for resource usage
+
+4. **Improved Functionality**
+   - Fixed edit functionality in inventory section (Admin/Staff only)
+   - Fixed edit/delete functionality in categories section (Admin/Staff only)
+   - Fixed return and details buttons in transactions section
+   - Fixed edit functionality in resources section (Admin/Staff only)
+   - Working export report functionality
+   - Role-based access controls throughout the application
+
+5. **Performance Enhancements**
+   - Optimized Reports component to prevent excessive API calls
+   - Memoized data processing to reduce client-side computation
+   - Efficient useEffect dependencies to prevent unnecessary re-renders
+   - Reduced network requests through better data management
+
+### Security
+
+- Row Level Security (RLS) implemented
+- Role-based access control
+- Secure authentication via Supabase
+- Edit privileges restricted to Admin and Staff roles
+- Transaction visibility based on user roles
+
+### Development Guidelines
+
+1. File Structure:
+   - `/src/components` - Reusable components
+   - `/src/pages` - Page components
+   - `/src/contexts` - React contexts
+   - `/src/hooks` - Custom hooks (all functions memoized with useCallback)
+
+2. Adding New Features:
+   - Create components in appropriate directories
+   - Update types in `types/supabase.ts`
+   - Add necessary database migrations
+   - Implement RLS policies
+   - Ensure proper role-based access controls
+
+3. Database Changes:
+   - Add migrations in `supabase/migrations`
+   - Test RLS policies
+   - Update TypeScript types
+
+4. Performance Considerations:
+   - Always wrap hook functions with useCallback
+   - Use useMemo for expensive computations
+   - Minimize useEffect dependencies
+   - Avoid direct Supabase calls in components when possible
+
+### Image Storage
+
+Currently, images are stored as base64 data URLs in the database. For production use, consider:
+- Using Supabase Storage for better performance
+- Implementing image compression
+- Adding image optimization
+
+### Troubleshooting
+
+Common Issues:
+
+1. RLS Policy Errors:
+   - Verify user role in database
+   - Check policy syntax
+   - Ensure user is authenticated
+
+2. Authentication Issues:
+   - Verify environment variables
+   - Check Supabase configuration
+   - Clear browser cache
+
+3. Database Errors:
+   - Run latest migrations
+   - Check foreign key constraints
+   - Verify RLS policies
+
+4. Image Upload Issues:
+   - Check file size (max 5MB)
+   - Verify file format (JPG, PNG, GIF)
+   - Ensure browser supports FileReader API
+
+5. Performance Issues:
+   - Check browser console for excessive network requests
+   - Verify useCallback is used for all hook functions
+   - Monitor component re-render patterns
+   - Use React DevTools Profiler to identify bottlenecks
+
+### Support
+
+For issues and support:
+1. Check documentation
+2. Review error logs
+3. Contact system administrator
+
+### License
+
+MIT License - See LICENSE file for details
